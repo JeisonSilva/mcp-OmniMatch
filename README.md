@@ -61,9 +61,11 @@ mcp-OmniMatch/
 │   │   ├── backend.js          # upsert_backend_schema
 │   │   └── context.js          # get_full_context · generate_mapping_prompt · clear_context
 │   ├── state/
-│   │   └── store.js            # In-memory ContextStore
+│   │   └── store.js            # SQLite-backed ContextStore (better-sqlite3)
 │   └── prompts/
 │       └── guides.js           # Extraction guides returned by generate_mapping_prompt
+├── data/
+│   └── omnimatch.db            # SQLite database (auto-created, git-ignored)
 ├── claude_desktop_config.example.json
 ├── package.json
 └── README.md
@@ -169,4 +171,5 @@ Claude: Extracting endpoints…
 - **Not a live watcher** — mcp-OmniMatch does not detect file changes automatically. Re-run `upsert_*` tools after editing source files.
 - **ReactiveForm depth** — complex nested `FormGroup` hierarchies may be partially captured if the LLM misses nested `formControlName` bindings. The Angular extraction guide instructs the model to look for these explicitly.
 - **External DTOs** — if a C# DTO is defined in a separate file that is not provided, the tool records it as `"<ExternalDto>"`. Provide both files for full analysis.
-- **In-memory only** — state is lost when the server process restarts. For persistent sessions across restarts, replace the store with SQLite (the store API is isolated in `src/state/store.js`).
+- **Persistent across restarts** — schemas are stored in `data/omnimatch.db` (SQLite, WAL mode). State survives server restarts; use `clear_context` to start a fresh analysis session.
+- **Custom DB path** — set the `OMNIMATCH_DB_PATH` environment variable to store the database elsewhere (e.g. a shared network drive or a project-specific location).
