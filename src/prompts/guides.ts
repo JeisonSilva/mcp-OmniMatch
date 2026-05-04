@@ -1,71 +1,71 @@
 export const ANGULAR_MAPPING_GUIDE = `
-# mcp-OmniMatch — Angular Extraction Guide
+# mcp-OmniMatch — Guia de Extração Angular
 
-You are about to read an Angular component (.ts) and its template (.html).
-Follow these steps **exactly** and call \`upsert_frontend_schema\` with the result.
+Você está prestes a ler um componente Angular (.ts) e seu template (.html).
+Siga estes passos **exatamente** e chame \`upsert_frontend_schema\` com o resultado.
 
-## Step 1 — Identify the screen
-Use the component class name or the route path as \`screen_id\`
-(e.g. \`customer-registration\`, \`login-screen\`).
+## Passo 1 — Identificar a tela
+Use o nome da classe do componente ou o caminho da rota como \`screen_id\`
+(ex.: \`cadastro-cliente\`, \`tela-login\`).
 
-## Step 2 — Extract every bound field
-Look for these patterns in the template and the component class:
+## Passo 2 — Extrair todos os campos vinculados
+Procure pelos seguintes padrões no template e na classe do componente:
 
-| Source pattern                          | What to capture             |
-|-----------------------------------------|-----------------------------|
-| \`[(ngModel)]="fieldName"\`             | Two-way binding → field     |
-| \`formControlName="fieldName"\`         | Reactive form control       |
-| \`[value]="expr"\` / \`(change)="fn()"\`| One-way binding + event     |
-| \`*ngFor="let item of list"\`           | Collection field            |
-| \`<button (click)="fn()">\`             | Action element              |
+| Padrão no código                        | O que capturar                  |
+|-----------------------------------------|---------------------------------|
+| \`[(ngModel)]="nomeCampo"\`             | Binding bidirecional → campo    |
+| \`formControlName="nomeCampo"\`         | Controle de formulário reativo  |
+| \`[value]="expr"\` / \`(change)="fn()"\`| Binding unidirecional + evento  |
+| \`*ngFor="let item of lista"\`          | Campo de coleção                |
+| \`<button (click)="fn()">\`             | Elemento de ação                |
 
-## Step 3 — Infer the TypeScript type
-Check the component class for the property declaration or FormBuilder definition.
-If not found, infer from context:
-- \`email\`, \`password\`, \`name\` → \`string\`
-- \`age\`, \`quantity\`, \`price\` → \`number\`
-- \`isActive\`, \`checked\` → \`boolean\`
-- date pickers → \`Date\`
-- unknown → \`any\`
+## Passo 3 — Inferir o tipo TypeScript
+Verifique na classe do componente a declaração da propriedade ou a definição do FormBuilder.
+Se não encontrar, infira pelo contexto:
+- \`email\`, \`senha\`, \`nome\` → \`string\`
+- \`idade\`, \`quantidade\`, \`preco\` → \`number\`
+- \`ativo\`, \`marcado\`, \`isAdmin\` → \`boolean\`
+- campos de data → \`Date\`
+- desconhecido → \`any\`
 
-## Step 4 — Identify actions
-For each \`(click)\`, \`(submit)\`, \`(change)\` binding, record:
-- the event name (e.g. \`submit\`, \`click\`)
-- the handler method name (e.g. \`onSubmit\`)
+## Passo 4 — Identificar as ações
+Para cada binding \`(click)\`, \`(submit)\`, \`(change)\`, registre:
+- o nome do evento (ex.: \`submit\`, \`click\`)
+- o nome do método handler (ex.: \`onSalvar\`, \`onEnviar\`)
 
-## Step 5 — Call the tool
-Call \`upsert_frontend_schema\` with:
+## Passo 5 — Chamar a ferramenta
+Chame \`upsert_frontend_schema\` com:
 \`\`\`json
 {
-  "screen_id": "<inferred-screen-id>",
+  "screen_id": "<screen-id-inferido>",
   "elements": [
-    { "name": "fieldName", "type": "string", "action": "submit" },
+    { "name": "nomeCampo", "type": "string", "action": "submit" },
     ...
   ]
 }
 \`\`\`
 
-## Important rules
-- **Do not** include CSS classes, IDs, or static display-only text.
-- **Do** include hidden fields and conditional fields (\`*ngIf\`). Mark them with \`"action": "conditional"\`.
-- One entry per distinct \`name\`. If the same field appears twice, merge into one.
-- Ignore router-outlet, third-party UI component wrappers that are purely visual.
+## Regras importantes
+- **Não inclua** classes CSS, IDs ou textos estáticos apenas para exibição.
+- **Inclua** campos ocultos e condicionais (\`*ngIf\`). Marque-os com \`"action": "conditional"\`.
+- Uma entrada por \`name\` distinto. Se o mesmo campo aparecer duas vezes, mescle em um.
+- Ignore router-outlet e wrappers de componentes de UI de terceiros que sejam puramente visuais.
 `;
 
 export const DOTNET_MAPPING_GUIDE = `
-# mcp-OmniMatch — .NET Controller Extraction Guide
+# mcp-OmniMatch — Guia de Extração .NET Controller
 
-You are about to read a C# Web API controller file.
-Follow these steps **exactly** and call \`upsert_backend_schema\` with the result.
+Você está prestes a ler um arquivo de controller C# Web API.
+Siga estes passos **exatamente** e chame \`upsert_backend_schema\` com o resultado.
 
-## Step 1 — Identify the controller
-Use the class name as \`controller_id\` (e.g. \`CustomerController\`).
-Note the \`[Route("api/[controller]")]\` attribute to determine the base path.
+## Passo 1 — Identificar o controller
+Use o nome da classe como \`controller_id\` (ex.: \`ClienteController\`).
+Observe o atributo \`[Route("api/[controller]")]\` para determinar o caminho base.
 
-## Step 2 — Find every HTTP action method
-Look for these attributes:
+## Passo 2 — Localizar todos os métodos de ação HTTP
+Procure pelos seguintes atributos:
 
-| Attribute         | HTTP method |
+| Atributo          | Método HTTP |
 |-------------------|-------------|
 | \`[HttpGet]\`     | GET         |
 | \`[HttpPost]\`    | POST        |
@@ -73,56 +73,56 @@ Look for these attributes:
 | \`[HttpPatch]\`   | PATCH       |
 | \`[HttpDelete]\`  | DELETE      |
 
-Ignore methods without an \`[Http*]\` attribute (middleware, private helpers, constructors).
+Ignore métodos sem atributo \`[Http*]\` (middlewares, métodos privados, construtores).
 
-## Step 3 — Build the route path
-Combine the controller base route with the method-level route template.
-Example: base = \`api/customers\`, method = \`[HttpGet("{id}")]\` → path = \`/api/customers/{id}\`.
+## Passo 3 — Montar o caminho da rota
+Combine a rota base do controller com o template de rota do método.
+Exemplo: base = \`api/clientes\`, método = \`[HttpGet("{id}")]\` → caminho = \`/api/clientes/{id}\`.
 
-## Step 4 — Extract the request DTO
-Look at the method parameter(s) decorated with \`[FromBody]\`, \`[FromQuery]\`, or \`[FromRoute]\`.
-If the parameter is a DTO class, find its property declarations and record:
-\`{ "propertyName": "CSharpType" }\`
+## Passo 4 — Extrair o DTO de requisição
+Verifique o(s) parâmetro(s) do método decorados com \`[FromBody]\`, \`[FromQuery]\` ou \`[FromRoute]\`.
+Se o parâmetro for uma classe DTO, localize as declarações de propriedade e registre:
+\`{ "nomeProp": "TipoCSharp" }\`
 
-Primitive type mappings:
+Mapeamento de tipos primitivos:
 - \`string\` → \`string\`
 - \`int\` / \`long\` → \`number\`
 - \`bool\` → \`boolean\`
 - \`DateTime\` / \`DateTimeOffset\` → \`Date\`
 - \`Guid\` → \`string\`
 - \`decimal\` / \`double\` / \`float\` → \`number\`
-- Nullable types (\`T?\`) → same base type, note nullability
+- Tipos anuláveis (\`T?\`) → mesmo tipo base, anote a nulabilidade
 
-## Step 5 — Extract the response type
-Inspect the method return type:
-- \`ActionResult<T>\` or \`Task<ActionResult<T>>\` → extract properties of \`T\`
-- \`IActionResult\` → use \`return Ok(obj)\` to infer the shape
-- Record \`{ "propertyName": "CSharpType" }\`
+## Passo 5 — Extrair o tipo de resposta
+Inspecione o tipo de retorno do método:
+- \`ActionResult<T>\` ou \`Task<ActionResult<T>>\` → extraia as propriedades de \`T\`
+- \`IActionResult\` → use \`return Ok(obj)\` para inferir o formato
+- Registre \`{ "nomeProp": "TipoCSharp" }\`
 
-## Step 6 — Collect status codes
-Look for \`return Ok()\`, \`return Created()\`, \`return BadRequest()\`, \`return NotFound()\`, etc.
-Map them to their HTTP numbers (200, 201, 400, 404, …).
+## Passo 6 — Coletar os status codes
+Procure por \`return Ok()\`, \`return Created()\`, \`return BadRequest()\`, \`return NotFound()\`, etc.
+Mapeie para os números HTTP correspondentes (200, 201, 400, 404, …).
 
-## Step 7 — Call the tool
-Call \`upsert_backend_schema\` with:
+## Passo 7 — Chamar a ferramenta
+Chame \`upsert_backend_schema\` com:
 \`\`\`json
 {
-  "controller_id": "CustomerController",
+  "controller_id": "ClienteController",
   "routes": [
     {
-      "path": "/api/customers",
+      "path": "/api/clientes",
       "method": "POST",
-      "request": { "name": "string", "email": "string", "birthDate": "Date" },
-      "response": { "id": "number", "name": "string" },
+      "request": { "nome": "string", "email": "string", "dataNascimento": "Date" },
+      "response": { "id": "number", "nome": "string" },
       "statusCodes": [201, 400, 409]
     }
   ]
 }
 \`\`\`
 
-## Important rules
-- **Ignore** constructors, private methods, filter attributes, logging statements.
-- **Do** include overloaded routes as separate entries.
-- If a DTO class is in a separate file and not provided, note it as \`"<ExternalDto>"\`.
-- List every distinct status code that \`return\` statements can produce.
+## Regras importantes
+- **Ignore** construtores, métodos privados, atributos de filtro e instruções de log.
+- **Inclua** rotas sobrecarregadas como entradas separadas.
+- Se a classe DTO estiver em arquivo separado e não for fornecida, registre como \`"<DtoExterno>"\`.
+- Liste todos os status codes distintos que os \`return\` do método podem produzir.
 `;

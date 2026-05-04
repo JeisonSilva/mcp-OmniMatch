@@ -21,9 +21,9 @@ export function registerContextTools(server: McpServer): void {
             {
               type: "text",
               text:
-                "[mcp-OmniMatch] The context store is empty.\n" +
-                "Use generate_mapping_prompt to get extraction instructions, then call " +
-                "upsert_frontend_schema and upsert_backend_schema to populate it.",
+                "[mcp-OmniMatch] O contexto está vazio.\n" +
+                "Use generate_mapping_prompt para obter as instruções de extração e depois chame " +
+                "upsert_frontend_schema e upsert_backend_schema para populá-lo.",
             },
           ],
         };
@@ -73,7 +73,7 @@ export function registerContextTools(server: McpServer): void {
       clearContext();
       return {
         content: [
-          { type: "text", text: "[mcp-OmniMatch] Context store cleared. All schemas removed." },
+          { type: "text", text: "[mcp-OmniMatch] Contexto limpo. Todos os schemas foram removidos." },
         ],
       };
     }

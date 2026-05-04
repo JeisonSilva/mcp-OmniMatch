@@ -46,9 +46,9 @@ export function registerBackendTools(server: McpServer): void {
           {
             type: "text",
             text:
-              `[mcp-OmniMatch] Backend schema for '${controller_id}' stored successfully. ` +
-              `${routes.length} route(s) registered.\n\n` +
-              `Stored routes:\n` +
+              `[mcp-OmniMatch] Schema de backend para '${controller_id}' armazenado com sucesso. ` +
+              `${routes.length} rota(s) registrada(s).\n\n` +
+              `Rotas armazenadas:\n` +
               routes
                 .map(
                   (r) =>

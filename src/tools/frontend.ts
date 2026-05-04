@@ -38,9 +38,9 @@ export function registerFrontendTools(server: McpServer): void {
           {
             type: "text",
             text:
-              `[mcp-OmniMatch] Frontend schema for '${screen_id}' stored successfully. ` +
-              `${elements.length} element(s) registered.\n\n` +
-              `Stored fields:\n` +
+              `[mcp-OmniMatch] Schema de frontend para '${screen_id}' armazenado com sucesso. ` +
+              `${elements.length} elemento(s) registrado(s).\n\n` +
+              `Campos armazenados:\n` +
               elements
                 .map(
                   (e) =>
