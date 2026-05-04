@@ -27,13 +27,14 @@ The MCP server is a **stateful middleware**: it accumulates extracted schemas ac
 
 ## Tools
 
-| Tool | Description |
+| Tool | Descrição |
 |---|---|
-| `generate_mapping_prompt` | Returns step-by-step extraction instructions for Angular or .NET source files. Call this first. |
-| `upsert_frontend_schema` | Stores/updates the field map of an Angular screen. |
-| `upsert_backend_schema` | Stores/updates the endpoint map of a .NET controller. |
-| `get_full_context` | Returns the complete state — frontend + backend maps — for final analysis. |
-| `clear_context` | Resets the store to start a fresh session without restarting the server. |
+| `generate_mapping_prompt` | Retorna o guia de extração passo a passo para arquivos Angular ou .NET. Chame primeiro. |
+| `upsert_frontend_schema` | Armazena/atualiza o mapa de campos de uma tela Angular. |
+| `upsert_backend_schema` | Armazena/atualiza o mapa de rotas de um controller .NET. |
+| `get_full_context` | Retorna o estado completo (frontend + backend) para a análise final. |
+| `gerar_relatorio` | Gera `relatorio-compatibilidade.md` e `plano-integracao.md` a partir da análise da LLM. |
+| `clear_context` | Limpa o store para iniciar uma nova sessão sem reiniciar o servidor. |
 
 ---
 
@@ -55,18 +56,22 @@ After `get_full_context`, instruct the model to evaluate:
 ```
 mcp-OmniMatch/
 ├── src/
-│   ├── server.ts               # MCP server entry point (StdioTransport)
+│   ├── server.ts               # Entry point MCP (StdioTransport)
 │   ├── tools/
 │   │   ├── frontend.ts         # upsert_frontend_schema
 │   │   ├── backend.ts          # upsert_backend_schema
-│   │   └── context.ts          # get_full_context · generate_mapping_prompt · clear_context
+│   │   ├── context.ts          # get_full_context · generate_mapping_prompt · clear_context
+│   │   └── reports.ts          # gerar_relatorio → dois arquivos Markdown
 │   ├── state/
-│   │   └── store.ts            # SQLite-backed ContextStore + shared domain types
+│   │   └── store.ts            # ContextStore SQLite + interfaces de domínio
 │   └── prompts/
-│       └── guides.ts           # Extraction guides returned by generate_mapping_prompt
+│       └── guides.ts           # Guias de extração (pt-BR)
 ├── data/
-│   └── omnimatch.db            # SQLite database (auto-created, git-ignored)
-├── tsconfig.json               # Editor / type-checking config (noEmit — Node 24 runs .ts directly)
+│   └── omnimatch.db            # Banco SQLite (criado automaticamente, git-ignored)
+├── reports/                    # Relatórios gerados (git-ignored)
+│   ├── relatorio-compatibilidade-YYYY-MM-DD.md
+│   └── plano-integracao-YYYY-MM-DD.md
+├── tsconfig.json               # Apenas para editor/IDE (noEmit — Node 24 roda .ts direto)
 ├── claude_desktop_config.example.json
 ├── package.json
 └── README.md
@@ -175,5 +180,6 @@ Claude: Extracting endpoints…
 - **Not a live watcher** — mcp-OmniMatch does not detect file changes automatically. Re-run `upsert_*` tools after editing source files.
 - **ReactiveForm depth** — complex nested `FormGroup` hierarchies may be partially captured if the LLM misses nested `formControlName` bindings. The Angular extraction guide instructs the model to look for these explicitly.
 - **External DTOs** — if a C# DTO is defined in a separate file that is not provided, the tool records it as `"<ExternalDto>"`. Provide both files for full analysis.
-- **Persistent across restarts** — schemas are stored in `data/omnimatch.db` (SQLite, WAL mode). State survives server restarts; use `clear_context` to start a fresh analysis session.
-- **Custom DB path** — set the `OMNIMATCH_DB_PATH` environment variable to store the database elsewhere (e.g. a shared network drive or a project-specific location).
+- **Persistência entre reinicializações** — schemas armazenados em `data/omnimatch.db` (SQLite, WAL). Use `clear_context` para iniciar nova sessão.
+- **Caminho do banco configurável** — variável `OMNIMATCH_DB_PATH` redireciona o arquivo `.db` para outro local.
+- **Caminho dos relatórios configurável** — variável `OMNIMATCH_REPORTS_PATH` define onde os arquivos Markdown serão salvos (padrão: `reports/` na raiz do projeto). O parâmetro `diretorio_saida` da ferramenta sobrepõe a variável por chamada.

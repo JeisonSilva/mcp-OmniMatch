@@ -5,6 +5,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { registerFrontendTools } from "./tools/frontend.ts";
 import { registerBackendTools } from "./tools/backend.ts";
 import { registerContextTools } from "./tools/context.ts";
+import { registerReportTools } from "./tools/reports.ts";
 
 const server = new McpServer({
   name: "mcp-OmniMatch",
@@ -14,6 +15,7 @@ const server = new McpServer({
 registerFrontendTools(server);
 registerBackendTools(server);
 registerContextTools(server);
+registerReportTools(server);
 
 const transport = new StdioServerTransport();
 await server.connect(transport);

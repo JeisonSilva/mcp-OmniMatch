@@ -3,6 +3,9 @@ data/*.db
 data/*.db-shm
 data/*.db-wal
 
+# mcp-OmniMatch — relatórios gerados
+reports/*.md
+
 # Logs
 logs
 *.log
