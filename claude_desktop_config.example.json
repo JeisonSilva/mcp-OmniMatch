@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "mcp-OmniMatch": {
+      "command": "node",
+      "args": ["/ABSOLUTE/PATH/TO/mcp-OmniMatch/src/server.js"],
+      "env": {
+        "NODE_ENV": "development"
+      }
+    }
+  }
+}
