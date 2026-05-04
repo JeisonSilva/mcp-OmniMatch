@@ -1,12 +1,9 @@
 import { z } from "zod";
-import { getFullContext, clearContext } from "../state/store.js";
-import { ANGULAR_MAPPING_GUIDE, DOTNET_MAPPING_GUIDE } from "../prompts/guides.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { getFullContext, clearContext } from "../state/store.ts";
+import { ANGULAR_MAPPING_GUIDE, DOTNET_MAPPING_GUIDE } from "../prompts/guides.ts";
 
-/**
- * Registers get_full_context, generate_mapping_prompt, and clear_context tools.
- * @param {import("@modelcontextprotocol/sdk/server/mcp.js").McpServer} server
- */
-export function registerContextTools(server) {
+export function registerContextTools(server: McpServer): void {
   server.tool(
     "get_full_context",
     "Retrieves the complete current state of all registered frontend and backend schemas stored in mcp-OmniMatch. " +
@@ -38,10 +35,7 @@ export function registerContextTools(server) {
             type: "text",
             text: JSON.stringify(
               {
-                _summary: {
-                  frontend_screens: frontendCount,
-                  backend_controllers: backendCount,
-                },
+                _summary: { frontend_screens: frontendCount, backend_controllers: backendCount },
                 ...context,
               },
               null,
@@ -65,17 +59,8 @@ export function registerContextTools(server) {
         ),
     },
     async ({ type }) => {
-      const guide =
-        type === "angular" ? ANGULAR_MAPPING_GUIDE : DOTNET_MAPPING_GUIDE;
-
-      return {
-        content: [
-          {
-            type: "text",
-            text: guide,
-          },
-        ],
-      };
+      const guide = type === "angular" ? ANGULAR_MAPPING_GUIDE : DOTNET_MAPPING_GUIDE;
+      return { content: [{ type: "text", text: guide }] };
     }
   );
 
@@ -88,10 +73,7 @@ export function registerContextTools(server) {
       clearContext();
       return {
         content: [
-          {
-            type: "text",
-            text: "[mcp-OmniMatch] Context store cleared. All schemas removed.",
-          },
+          { type: "text", text: "[mcp-OmniMatch] Context store cleared. All schemas removed." },
         ],
       };
     }

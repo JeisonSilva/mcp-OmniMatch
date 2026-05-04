@@ -2,9 +2,9 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
-import { registerFrontendTools } from "./tools/frontend.js";
-import { registerBackendTools } from "./tools/backend.js";
-import { registerContextTools } from "./tools/context.js";
+import { registerFrontendTools } from "./tools/frontend.ts";
+import { registerBackendTools } from "./tools/backend.ts";
+import { registerContextTools } from "./tools/context.ts";
 
 const server = new McpServer({
   name: "mcp-OmniMatch",

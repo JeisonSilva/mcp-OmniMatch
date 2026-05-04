@@ -55,21 +55,25 @@ After `get_full_context`, instruct the model to evaluate:
 ```
 mcp-OmniMatch/
 ├── src/
-│   ├── server.js               # MCP server entry point (StdioTransport)
+│   ├── server.ts               # MCP server entry point (StdioTransport)
 │   ├── tools/
-│   │   ├── frontend.js         # upsert_frontend_schema
-│   │   ├── backend.js          # upsert_backend_schema
-│   │   └── context.js          # get_full_context · generate_mapping_prompt · clear_context
+│   │   ├── frontend.ts         # upsert_frontend_schema
+│   │   ├── backend.ts          # upsert_backend_schema
+│   │   └── context.ts          # get_full_context · generate_mapping_prompt · clear_context
 │   ├── state/
-│   │   └── store.js            # SQLite-backed ContextStore (better-sqlite3)
+│   │   └── store.ts            # SQLite-backed ContextStore + shared domain types
 │   └── prompts/
-│       └── guides.js           # Extraction guides returned by generate_mapping_prompt
+│       └── guides.ts           # Extraction guides returned by generate_mapping_prompt
 ├── data/
 │   └── omnimatch.db            # SQLite database (auto-created, git-ignored)
+├── tsconfig.json               # Editor / type-checking config (noEmit — Node 24 runs .ts directly)
 ├── claude_desktop_config.example.json
 ├── package.json
 └── README.md
 ```
+
+> **Runtime:** Node.js 24+ runs `.ts` files natively without compilation. No `tsc`, no build step.  
+> `tsconfig.json` exists only for IDE type-checking (`noEmit: true`).
 
 ---
 
@@ -95,7 +99,7 @@ Copy `claude_desktop_config.example.json` and merge it into your Claude Desktop 
   "mcpServers": {
     "mcp-OmniMatch": {
       "command": "node",
-      "args": ["/absolute/path/to/mcp-OmniMatch/src/server.js"],
+      "args": ["/absolute/path/to/mcp-OmniMatch/src/server.ts"],
       "env": {
         "NODE_ENV": "development"
       }
@@ -117,7 +121,7 @@ Add to `.cursor/mcp.json` in your project root (or the global `~/.cursor/mcp.jso
   "mcpServers": {
     "mcp-OmniMatch": {
       "command": "node",
-      "args": ["/absolute/path/to/mcp-OmniMatch/src/server.js"]
+      "args": ["/absolute/path/to/mcp-OmniMatch/src/server.ts"]
     }
   }
 }

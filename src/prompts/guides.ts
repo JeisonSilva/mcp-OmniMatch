@@ -1,10 +1,3 @@
-/**
- * Prompt-steering guides for mcp-OmniMatch.
- *
- * These are returned verbatim by the generate_mapping_prompt tool so the LLM
- * receives precise extraction instructions before the user pastes source code.
- */
-
 export const ANGULAR_MAPPING_GUIDE = `
 # mcp-OmniMatch — Angular Extraction Guide
 

@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { upsertFrontend } from "../state/store.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { upsertFrontend } from "../state/store.ts";
 
 const FieldSchema = z.object({
   name: z.string().describe("Field name or identifier (e.g. 'customerEmail')"),
@@ -9,16 +10,10 @@ const FieldSchema = z.object({
   action: z
     .string()
     .optional()
-    .describe(
-      "Associated event or action (submit, click, change, conditional, etc.)"
-    ),
+    .describe("Associated event or action (submit, click, change, conditional, etc.)"),
 });
 
-/**
- * Registers the upsert_frontend_schema tool on the MCP server instance.
- * @param {import("@modelcontextprotocol/sdk/server/mcp.js").McpServer} server
- */
-export function registerFrontendTools(server) {
+export function registerFrontendTools(server: McpServer): void {
   server.tool(
     "upsert_frontend_schema",
     "Registers or updates the schema mapping of an Angular screen/component inside mcp-OmniMatch. " +
